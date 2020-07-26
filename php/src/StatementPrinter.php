@@ -31,7 +31,7 @@ class StatementPrinter
         /** @var Performance $performance */
         foreach ($data->performances as $performance) {
             // print line for this order
-            $result .= "  {$this->playFor($performance)->name}:";
+            $result .= "  {$performance->play->name}:";
             $result .= " {$this->usd($this->amountFor($performance))}";
             $result .= " ({$performance->audience} seats)\n";
         }
@@ -42,7 +42,7 @@ class StatementPrinter
 
     protected function amountFor(Performance $performance): int
     {
-        switch ($this->playFor($performance)->type) {
+        switch ($performance->play->type) {
             case 'tragedy':
                 $result = 40000;
                 if ($performance->audience > 30) {
@@ -59,7 +59,7 @@ class StatementPrinter
                 break;
 
             default:
-                throw new Error("Unknown type: {$this->playFor($performance)->type}");
+                throw new Error("Unknown type: {$performance->play->type}");
         }
         return $result;
     }
@@ -71,7 +71,7 @@ class StatementPrinter
 
     public function volumeCreditsFor(Performance $performance)
     {
-        return $this->playFor($performance)->type === 'comedy'
+        return $performance->play->type === 'comedy'
             ? max($performance->audience - 30, 0) + floor($performance->audience / 5)
             : max($performance->audience - 30, 0);
     }
@@ -82,7 +82,7 @@ class StatementPrinter
             ->formatCurrency($number / 100, 'USD');
     }
 
-    public function totalVolumeCredits($data): int
+    public function totalVolumeCredits(stdClass $data): int
     {
         $result = 0;
         foreach ($data->performances as $performance) {
@@ -92,7 +92,7 @@ class StatementPrinter
         return (int)$result;
     }
 
-    public function totalAmount($data): int
+    public function totalAmount(stdClass $data): int
     {
         $result = 0;
         foreach ($data->performances as $performance) {

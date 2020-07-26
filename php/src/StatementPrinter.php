@@ -32,7 +32,7 @@ class StatementPrinter
         foreach ($data->performances as $performance) {
             // print line for this order
             $result .= "  {$performance->play->name}:";
-            $result .= " {$this->usd($this->amountFor($performance))}";
+            $result .= " {$this->usd($performance->amount)}";
             $result .= " ({$performance->audience} seats)\n";
         }
         $result .= "Amount owed is {$this->usd($this->totalAmount($data))}\n";
@@ -96,7 +96,7 @@ class StatementPrinter
     {
         $result = 0;
         foreach ($data->performances as $performance) {
-            $result += $this->amountFor($performance);
+            $result += $performance->amount;
         }
         return $result;
     }
@@ -108,6 +108,7 @@ class StatementPrinter
     {
         $result = clone $performance;
         $result->play = $this->playFor($result);
+        $result->amount = $this->amountFor($result);
         return $result;
     }
 }

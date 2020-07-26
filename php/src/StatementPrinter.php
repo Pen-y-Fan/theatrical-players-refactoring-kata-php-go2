@@ -21,6 +21,8 @@ class StatementPrinter
         $statementData = new stdClass();
         $statementData->customer = $invoice->customer;
         $statementData->performances = array_map('self::enrichPerformance', $invoice->performances);
+        $statementData->totalAmount = $this->totalAmount($statementData);
+        $statementData->totalVolumeCredits = $this->totalVolumeCredits($statementData);
 
         return $this->renderPlainText($statementData);
     }
@@ -35,8 +37,8 @@ class StatementPrinter
             $result .= " {$this->usd($performance->amount)}";
             $result .= " ({$performance->audience} seats)\n";
         }
-        $result .= "Amount owed is {$this->usd($this->totalAmount($data))}\n";
-        $result .= "You earned {$this->totalVolumeCredits($data)} credits";
+        $result .= "Amount owed is {$this->usd($data->totalAmount)}\n";
+        $result .= "You earned {$data->totalVolumeCredits} credits";
         return $result;
     }
 
@@ -85,9 +87,10 @@ class StatementPrinter
     public function totalVolumeCredits(stdClass $data): int
     {
         $result = 0;
+        /** @var Performance $performance */
         foreach ($data->performances as $performance) {
             // add volume credits
-            $result += $this->volumeCreditsFor($performance);
+            $result += $performance->volumeCredits;
         }
         return (int)$result;
     }
@@ -95,6 +98,7 @@ class StatementPrinter
     public function totalAmount(stdClass $data): int
     {
         $result = 0;
+        /** @var Performance $performance */
         foreach ($data->performances as $performance) {
             $result += $performance->amount;
         }

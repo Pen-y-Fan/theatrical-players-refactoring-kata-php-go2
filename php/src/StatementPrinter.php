@@ -6,6 +6,7 @@ namespace Theatrical;
 
 use Error;
 use NumberFormatter;
+use stdClass;
 
 class StatementPrinter
 {
@@ -22,12 +23,14 @@ class StatementPrinter
     {
         $this->plays = $plays;
         $this->invoice = $invoice;
-        return $this->renderPlainText();
+        $statementData = new stdClass();
+        $statementData->customer = $this->invoice->customer;
+        return $this->renderPlainText($statementData);
     }
 
-    private function renderPlainText()
+    private function renderPlainText(stdClass $data)
     {
-        $result = "Statement for {$this->invoice->customer}\n";
+        $result = "Statement for {$data->customer}\n";
         /** @var Performance $performance */
         foreach ($this->invoice->performances as $performance) {
             // print line for this order

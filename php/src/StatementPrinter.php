@@ -11,6 +11,7 @@ class StatementPrinter
 {
     public function statement(Invoice $invoice, array $plays): string
     {
+//        return $this->renderHtml((new CreateStatementData())->createStatementData($invoice, $plays));
         return $this->renderPlainText((new CreateStatementData())->createStatementData($invoice, $plays));
     }
 
@@ -42,21 +43,21 @@ class StatementPrinter
 
     private function renderHtml(stdClass $data): string
     {
-        $result = "<h1>Statement for {$data->customer}</h1>";
-        $result .= "<table>";
-        $result .= "  <tr><th>play</th><th>seats</th><th>cost</th></tr>";
+        $result = "<h1>Statement for {$data->customer}</h1>". PHP_EOL;
+        $result .= "<table>". PHP_EOL;
+        $result .= "  <tr><th>play</th><th>seats</th><th>cost</th></tr>". PHP_EOL;
         /** @var Performance $performance */
         foreach ($data->performances as $performance) {
             // print line for this order
-            $result .= "  <tr>";
-            $result .= "    <td>{$performance->play->name}</td>";
-            $result .= "    <td>({$performance->audience} seats)</td>";
-            $result .= "    <td>{$this->usd($performance->amount)}</td>";
-            $result .= "  </tr>";
+            $result .= "  <tr>". PHP_EOL;
+            $result .= "    <td>{$performance->play->name}</td>". PHP_EOL;
+            $result .= "    <td>{$performance->audience}</td>". PHP_EOL;
+            $result .= "    <td>{$this->usd($performance->amount)}</td>". PHP_EOL;
+            $result .= "  </tr>". PHP_EOL;
         }
-        $result .= "</table>";
-        $result .= "<p>Amount owed is {$this->usd($data->totalAmount)}</p>";
-        $result .= "<p>You earned {$data->totalVolumeCredits} credits</p>";
+        $result .= "</table>". PHP_EOL;
+        $result .= "<p>Amount owed is {$this->usd($data->totalAmount)}</p>". PHP_EOL;
+        $result .= "<p>You earned {$data->totalVolumeCredits} credits</p>". PHP_EOL;
         return $result;
     }
 }

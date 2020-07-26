@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Theatrical\HtmlStatement;
 use Theatrical\Invoice;
 use Theatrical\Performance;
 use Theatrical\Play;
+use Theatrical\StatementPrinter;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -22,8 +22,8 @@ $performances = [
 ];
 $invoice = new Invoice("BigCo", $performances);
 
-echo "<h1>Html Statement</h1>";
+//echo "<h1>Html Statement</h1>";
 
 // Uncomment the following two line once the HtmlStatement Class is written (Ch.1 page 31)
-//$statementPrinter = new HtmlStatement();
-//echo  $statementPrinter->print($invoice, $plays);
+$statementPrinter = new StatementPrinter();
+echo  $statementPrinter->htmlStatement($invoice, $plays);

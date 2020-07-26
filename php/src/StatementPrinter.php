@@ -25,8 +25,6 @@ class StatementPrinter
 
         /** @var Performance $performance */
         foreach ($invoice->performances as $performance) {
-            $thisAmount = $this->amountFor($performance);
-
             // add volume credits
             $volumeCredits += max($performance->audience - 30, 0);
             // add extra credit for every ten comedy attendees
@@ -35,10 +33,10 @@ class StatementPrinter
             }
 
             // print line for this order
-            $result .= "  {$this->playFor($performance)->name}: {$format->formatCurrency($thisAmount / 100, 'USD')} ";
+            $result .= "  {$this->playFor($performance)->name}: {$format->formatCurrency($this->amountFor($performance) / 100, 'USD')} ";
             $result .= "({$performance->audience} seats)\n";
 
-            $totalAmount += $thisAmount;
+            $totalAmount += $this->amountFor($performance);
         }
 
         $result .= "Amount owed is {$format->formatCurrency($totalAmount / 100, 'USD')}\n";

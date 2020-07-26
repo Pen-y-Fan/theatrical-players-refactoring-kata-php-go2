@@ -31,13 +31,6 @@ class CreateStatementData
         return $plays[$performance->playID];
     }
 
-    protected function volumeCreditsFor(Performance $performance): int
-    {
-        return $performance->play->type === 'comedy'
-            ? max($performance->audience - 30, 0) + (int)floor($performance->audience / 5)
-            : max($performance->audience - 30, 0);
-    }
-
     protected function totalVolumeCredits(stdClass $data): int
     {
         return (int)array_reduce($data->performances, function ($total, $performance) {

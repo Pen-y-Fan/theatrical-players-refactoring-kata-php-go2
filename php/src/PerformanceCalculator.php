@@ -27,7 +27,7 @@ class PerformanceCalculator
         $this->play = $play;
     }
 
-    private function amount(): int
+    public function amount(): int
     {
         switch ($this->play->type) {
             case 'tragedy':

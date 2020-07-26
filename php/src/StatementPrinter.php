@@ -25,21 +25,23 @@ class StatementPrinter
         $this->invoice = $invoice;
         $statementData = new stdClass();
         $statementData->customer = $this->invoice->customer;
+        $statementData->performances = $invoice->performances;
+
         return $this->renderPlainText($statementData);
     }
 
-    private function renderPlainText(stdClass $data)
+    private function renderPlainText(stdClass $data): string
     {
         $result = "Statement for {$data->customer}\n";
         /** @var Performance $performance */
-        foreach ($this->invoice->performances as $performance) {
+        foreach ($data->performances as $performance) {
             // print line for this order
             $result .= "  {$this->playFor($performance)->name}:";
             $result .= " {$this->usd($this->amountFor($performance))}";
             $result .= " ({$performance->audience} seats)\n";
         }
-        $result .= "Amount owed is {$this->usd($this->totalAmount())}\n";
-        $result .= "You earned {$this->totalVolumeCredits()} credits";
+        $result .= "Amount owed is {$this->usd($this->totalAmount($data))}\n";
+        $result .= "You earned {$this->totalVolumeCredits($data)} credits";
         return $result;
     }
 
@@ -85,20 +87,20 @@ class StatementPrinter
             ->formatCurrency($number / 100, 'USD');
     }
 
-    public function totalVolumeCredits(): int
+    public function totalVolumeCredits($data): int
     {
         $result = 0;
-        foreach ($this->invoice->performances as $performance) {
+        foreach ($data->performances as $performance) {
             // add volume credits
             $result += $this->volumeCreditsFor($performance);
         }
         return (int)$result;
     }
 
-    public function totalAmount(): int
+    public function totalAmount($data): int
     {
         $result = 0;
-        foreach ($this->invoice->performances as $performance) {
+        foreach ($data->performances as $performance) {
             $result += $this->amountFor($performance);
         }
         return $result;

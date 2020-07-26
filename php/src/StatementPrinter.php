@@ -25,7 +25,7 @@ class StatementPrinter
 
         /** @var Performance $performance */
         foreach ($invoice->performances as $performance) {
-            $thisAmount = $this->amountFor($performance, $this->playFor($performance));
+            $thisAmount = $this->amountFor($performance);
 
             // add volume credits
             $volumeCredits += max($performance->audience - 30, 0);
@@ -46,7 +46,7 @@ class StatementPrinter
         return $result;
     }
 
-    protected function amountFor(Performance $performance, Play $play): int
+    protected function amountFor(Performance $performance): int
     {
         switch ($this->playFor($performance)->type) {
             case 'tragedy':

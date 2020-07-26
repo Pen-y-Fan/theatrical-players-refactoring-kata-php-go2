@@ -10,17 +10,17 @@ use stdClass;
 
 class StatementPrinter
 {
-    /**
-     * @var Play[]
-     */
-    private $plays;
-
     public function statement(Invoice $invoice, array $plays): string
     {
-        $this->plays = $plays;
         $statementData = new stdClass();
         $statementData->customer = $invoice->customer;
-        $statementData->performances = array_map('self::enrichPerformance', $invoice->performances);
+        $statementData->performances = array_map(function (Performance $performance) use ($plays) {
+            $result = clone $performance;
+            $result->play = clone $this->playFor($result, $plays);
+            $result->amount = $this->amountFor($result);
+            $result->volumeCredits = $this->volumeCreditsFor($result);
+            return $result;
+        }, $invoice->performances);
         $statementData->totalAmount = $this->totalAmount($statementData);
         $statementData->totalVolumeCredits = $this->totalVolumeCredits($statementData);
 
@@ -66,9 +66,9 @@ class StatementPrinter
         return $result;
     }
 
-    private function playFor(Performance $performance): Play
+    private function playFor(Performance $performance, array $plays): Play
     {
-        return $this->plays[$performance->playID];
+        return $plays[$performance->playID];
     }
 
     public function volumeCreditsFor(Performance $performance): int
@@ -86,34 +86,15 @@ class StatementPrinter
 
     public function totalVolumeCredits(stdClass $data): int
     {
-        $result = 0;
-        /** @var Performance $performance */
-        foreach ($data->performances as $performance) {
-            // add volume credits
-            $result += $performance->volumeCredits;
-        }
-        return (int)$result;
+        return (int)array_reduce($data->performances, function ($total, $performance) {
+            return $total + $performance->volumeCredits;
+        }, 0);
     }
 
     public function totalAmount(stdClass $data): int
     {
-        $result = 0;
-        /** @var Performance $performance */
-        foreach ($data->performances as $performance) {
-            $result += $performance->amount;
-        }
-        return $result;
-    }
-
-    /**
-     * clone performance to allow the data to be modified
-     */
-    private function enrichPerformance(Performance $performance): Performance
-    {
-        $result = clone $performance;
-        $result->play = $this->playFor($result);
-        $result->amount = $this->amountFor($result);
-        $result->volumeCredits = $this->volumeCreditsFor($result);
-        return $result;
+        return array_reduce($data->performances, function ($total, $performance) {
+            return $total + $performance->amount;
+        }, 0);
     }
 }

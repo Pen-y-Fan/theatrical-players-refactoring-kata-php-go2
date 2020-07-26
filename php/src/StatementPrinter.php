@@ -9,27 +9,33 @@ use NumberFormatter;
 
 class StatementPrinter
 {
+    /**
+     * @var Play[]
+     */
+    private $plays;
+
     public function print(Invoice $invoice, array $plays): string
     {
+        $this->plays = $plays;
         $totalAmount = 0;
         $volumeCredits = 0;
 
         $result = "Statement for {$invoice->customer}\n";
         $format = new NumberFormatter('en_US', NumberFormatter::CURRENCY);
 
+        /** @var Performance $performance */
         foreach ($invoice->performances as $performance) {
-            $play = $plays[$performance->play_id];
-            $thisAmount = $this->amountFor($play, $performance);
+            $thisAmount = $this->amountFor($performance, $this->playFor($performance));
 
             // add volume credits
             $volumeCredits += max($performance->audience - 30, 0);
             // add extra credit for every ten comedy attendees
-            if ($play->type === 'comedy') {
+            if ($this->playFor($performance)->type === 'comedy') {
                 $volumeCredits += floor($performance->audience / 5);
             }
 
             // print line for this order
-            $result .= "  {$play->name}: {$format->formatCurrency($thisAmount / 100, 'USD')} ";
+            $result .= "  {$this->playFor($performance)->name}: {$format->formatCurrency($thisAmount / 100, 'USD')} ";
             $result .= "({$performance->audience} seats)\n";
 
             $totalAmount += $thisAmount;
@@ -40,27 +46,32 @@ class StatementPrinter
         return $result;
     }
 
-    protected function amountFor(Play $play, Performance $performance): int
+    protected function amountFor(Performance $performance, Play $play): int
     {
-        switch ($play->type) {
+        switch ($this->playFor($performance)->type) {
             case 'tragedy':
-                $thisAmount = 40000;
+                $result = 40000;
                 if ($performance->audience > 30) {
-                    $thisAmount += 1000 * ($performance->audience - 30);
+                    $result += 1000 * ($performance->audience - 30);
                 }
                 break;
 
             case 'comedy':
-                $thisAmount = 30000;
+                $result = 30000;
                 if ($performance->audience > 20) {
-                    $thisAmount += 10000 + 500 * ($performance->audience - 20);
+                    $result += 10000 + 500 * ($performance->audience - 20);
                 }
-                $thisAmount += 300 * $performance->audience;
+                $result += 300 * $performance->audience;
                 break;
 
             default:
-                throw new Error("Unknown type: {$play->type}");
+                throw new Error("Unknown type: {$this->playFor($performance)->type}");
         }
-        return $thisAmount;
+        return $result;
+    }
+
+    private function playFor(Performance $performance): Play
+    {
+        return $this->plays[$performance->playID];
     }
 }

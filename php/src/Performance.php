@@ -9,7 +9,7 @@ class Performance
     /**
      * @var string
      */
-    public $play_id;
+    public $playID;
 
     /**
      * @var int
@@ -21,9 +21,9 @@ class Performance
      */
     public $play;
 
-    public function __construct(string $play_id, int $audience)
+    public function __construct(string $playID, int $audience)
     {
-        $this->play_id = $play_id;
+        $this->playID = $playID;
         $this->audience = $audience;
     }
 }

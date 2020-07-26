@@ -29,7 +29,7 @@ final class StatementPrinterTest extends TestCase
         ];
         $invoice = new Invoice('BigCo', $performances);
         $statementPrinter = new StatementPrinter();
-        $result = $statementPrinter->print($invoice, $plays);
+        $result = $statementPrinter->statement($invoice, $plays);
 
         Approvals::verifyString($result);
     }
@@ -46,6 +46,6 @@ final class StatementPrinterTest extends TestCase
         $invoice = new Invoice('BigCo', $performances);
         $statementPrinter = new StatementPrinter();
         $this->expectException(Error::class);
-        $statementPrinter->print($invoice, $plays);
+        $statementPrinter->statement($invoice, $plays);
     }
 }

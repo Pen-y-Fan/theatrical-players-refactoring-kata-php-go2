@@ -34,9 +34,7 @@ class StatementPrinter
             $result .= " {$this->usd($this->amountFor($performance))}";
             $result .= " ({$performance->audience} seats)\n";
         }
-        $totalAmount = $this->totalAmount();
-
-        $result .= "Amount owed is {$this->usd($totalAmount)}\n";
+        $result .= "Amount owed is {$this->usd($this->totalAmount())}\n";
         $result .= "You earned {$this->totalVolumeCredits()} credits";
         return $result;
     }
@@ -95,10 +93,10 @@ class StatementPrinter
 
     public function totalAmount(): int
     {
-        $totalAmount = 0;
+        $result = 0;
         foreach ($this->invoice->performances as $performance) {
-            $totalAmount += $this->amountFor($performance);
+            $result += $this->amountFor($performance);
         }
-        return $totalAmount;
+        return $result;
     }
 }

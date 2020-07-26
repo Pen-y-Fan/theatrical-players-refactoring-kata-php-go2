@@ -16,11 +16,6 @@ class Performance
      */
     public $audience;
 
-    /**
-     * @var Play
-     */
-    public $play;
-
     public function __construct(string $playID, int $audience)
     {
         $this->playID = $playID;

@@ -18,22 +18,25 @@ class StatementPrinter
     {
         $this->plays = $plays;
         $totalAmount = 0;
-        $volumeCredits = 0;
+
 
         $result = "Statement for {$invoice->customer}\n";
 //        $format = $this->format();
 
         /** @var Performance $performance */
         foreach ($invoice->performances as $performance) {
-            // add volume credits
-            $volumeCredits += $this->volumeCreditsFor($performance);
-
             // print line for this order
             $result .= "  {$this->playFor($performance)->name}:";
             $result .= " {$this->usd($this->amountFor($performance))}";
             $result .= " ({$performance->audience} seats)\n";
 
             $totalAmount += $this->amountFor($performance);
+        }
+
+        $volumeCredits = 0;
+        foreach ($invoice->performances as $performance) {
+            // add volume credits
+            $volumeCredits += $this->volumeCreditsFor($performance);
         }
 
         $result .= "Amount owed is {$this->usd($totalAmount)}\n";

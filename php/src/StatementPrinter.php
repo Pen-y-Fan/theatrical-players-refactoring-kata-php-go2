@@ -33,11 +33,7 @@ class StatementPrinter
             $totalAmount += $this->amountFor($performance);
         }
 
-        $volumeCredits = 0;
-        foreach ($invoice->performances as $performance) {
-            // add volume credits
-            $volumeCredits += $this->volumeCreditsFor($performance);
-        }
+        $volumeCredits = $this->totalVolumeCredits($invoice);
 
         $result .= "Amount owed is {$this->usd($totalAmount)}\n";
         $result .= "You earned {$volumeCredits} credits";
@@ -84,5 +80,15 @@ class StatementPrinter
     {
         return (new NumberFormatter('en_US', NumberFormatter::CURRENCY))
             ->formatCurrency($number / 100, 'USD');
+    }
+
+    public function totalVolumeCredits(Invoice $invoice)
+    {
+        $volumeCredits = 0;
+        foreach ($invoice->performances as $performance) {
+            // add volume credits
+            $volumeCredits += $this->volumeCreditsFor($performance);
+        }
+        return $volumeCredits;
     }
 }

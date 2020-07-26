@@ -14,9 +14,9 @@ class CreateStatementData
         $statementData = new stdClass();
         $statementData->customer = $invoice->customer;
         $statementData->performances = array_map(function (Performance $performance) use ($plays) {
-            $calculator = new PerformanceCalculator($performance);
             $result = clone $performance;
-            $result->play = clone $this->playFor($result, $plays);
+            $calculator = new PerformanceCalculator($performance, $this->playFor($result, $plays));
+            $result->play = $calculator->play;
             $result->amount = $this->amountFor($result);
             $result->volumeCredits = $this->volumeCreditsFor($result);
             return $result;

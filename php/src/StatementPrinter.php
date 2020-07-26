@@ -19,27 +19,7 @@ class StatementPrinter
 
         foreach ($invoice->performances as $performance) {
             $play = $plays[$performance->play_id];
-            $thisAmount = 0;
-
-            switch ($play->type) {
-                case 'tragedy':
-                    $thisAmount = 40000;
-                    if ($performance->audience > 30) {
-                        $thisAmount += 1000 * ($performance->audience - 30);
-                    }
-                    break;
-
-                case 'comedy':
-                    $thisAmount = 30000;
-                    if ($performance->audience > 20) {
-                        $thisAmount += 10000 + 500 * ($performance->audience - 20);
-                    }
-                    $thisAmount += 300 * $performance->audience;
-                    break;
-
-                default:
-                    throw new Error("Unknown type: {$play->type}");
-            }
+            $thisAmount = $this->amountFor($play, $performance);
 
             // add volume credits
             $volumeCredits += max($performance->audience - 30, 0);
@@ -55,8 +35,32 @@ class StatementPrinter
             $totalAmount += $thisAmount;
         }
 
-        $result .= "Amount owed is {$format ->formatCurrency($totalAmount / 100, 'USD')}\n";
+        $result .= "Amount owed is {$format->formatCurrency($totalAmount / 100, 'USD')}\n";
         $result .= "You earned {$volumeCredits} credits";
         return $result;
+    }
+
+    protected function amountFor(Play $play, Performance $performance): int
+    {
+        switch ($play->type) {
+            case 'tragedy':
+                $thisAmount = 40000;
+                if ($performance->audience > 30) {
+                    $thisAmount += 1000 * ($performance->audience - 30);
+                }
+                break;
+
+            case 'comedy':
+                $thisAmount = 30000;
+                if ($performance->audience > 20) {
+                    $thisAmount += 10000 + 500 * ($performance->audience - 20);
+                }
+                $thisAmount += 300 * $performance->audience;
+                break;
+
+            default:
+                throw new Error("Unknown type: {$play->type}");
+        }
+        return $thisAmount;
     }
 }

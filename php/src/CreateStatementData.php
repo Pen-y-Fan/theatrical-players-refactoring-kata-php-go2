@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Theatrical;
 
-use Error;
 use stdClass;
 
 class CreateStatementData
@@ -17,7 +16,7 @@ class CreateStatementData
             $result = clone $performance;
             $calculator = new PerformanceCalculator($performance, $this->playFor($result, $plays));
             $result->play = $calculator->play;
-            $result->amount = $this->amountFor($result);
+            $result->amount = $calculator->amountFor();
             $result->volumeCredits = $this->volumeCreditsFor($result);
             return $result;
         }, $invoice->performances);
@@ -25,30 +24,6 @@ class CreateStatementData
         $statementData->totalVolumeCredits = $this->totalVolumeCredits($statementData);
 
         return $statementData;
-    }
-
-    protected function amountFor(Performance $performance): int
-    {
-        switch ($performance->play->type) {
-            case 'tragedy':
-                $result = 40000;
-                if ($performance->audience > 30) {
-                    $result += 1000 * ($performance->audience - 30);
-                }
-                break;
-
-            case 'comedy':
-                $result = 30000;
-                if ($performance->audience > 20) {
-                    $result += 10000 + 500 * ($performance->audience - 20);
-                }
-                $result += 300 * $performance->audience;
-                break;
-
-            default:
-                throw new Error("Unknown type: {$performance->play->type}");
-        }
-        return $result;
     }
 
     protected function playFor(Performance $performance, array $plays): Play

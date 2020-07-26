@@ -12,7 +12,7 @@ class Invoice
     public $customer;
 
     /**
-     * @var array
+     * @var Performance[]
      */
     public $performances;
 

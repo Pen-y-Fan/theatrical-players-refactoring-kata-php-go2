@@ -14,18 +14,13 @@ class StatementPrinter
      * @var Play[]
      */
     private $plays;
-    /**
-     * @var Invoice
-     */
-    private $invoice;
 
     public function statement(Invoice $invoice, array $plays): string
     {
         $this->plays = $plays;
-        $this->invoice = $invoice;
         $statementData = new stdClass();
-        $statementData->customer = $this->invoice->customer;
-        $statementData->performances = $invoice->performances;
+        $statementData->customer = $invoice->customer;
+        $statementData->performances = array_map('self::enrichPerformance', $invoice->performances);
 
         return $this->renderPlainText($statementData);
     }
@@ -104,5 +99,13 @@ class StatementPrinter
             $result += $this->amountFor($performance);
         }
         return $result;
+    }
+
+    /**
+     * clone performance to allow the data to be modified
+     */
+    private function enrichPerformance(Performance $performance): Performance
+    {
+        return clone $performance;
     }
 }

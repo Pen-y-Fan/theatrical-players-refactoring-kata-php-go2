@@ -14,6 +14,7 @@ class CreateStatementData
         $statementData = new stdClass();
         $statementData->customer = $invoice->customer;
         $statementData->performances = array_map(function (Performance $performance) use ($plays) {
+            $calculator = new PerformanceCalculator($performance);
             $result = clone $performance;
             $result->play = clone $this->playFor($result, $plays);
             $result->amount = $this->amountFor($result);
@@ -50,19 +51,19 @@ class CreateStatementData
         return $result;
     }
 
-    private function playFor(Performance $performance, array $plays): Play
+    protected function playFor(Performance $performance, array $plays): Play
     {
         return $plays[$performance->playID];
     }
 
-    public function volumeCreditsFor(Performance $performance): int
+    protected function volumeCreditsFor(Performance $performance): int
     {
         return $performance->play->type === 'comedy'
             ? max($performance->audience - 30, 0) + (int)floor($performance->audience / 5)
             : max($performance->audience - 30, 0);
     }
 
-    public function totalVolumeCredits(stdClass $data): int
+    protected function totalVolumeCredits(stdClass $data): int
     {
         return (int)array_reduce($data->performances, function ($total, $performance) {
             return $total + $performance->volumeCredits;

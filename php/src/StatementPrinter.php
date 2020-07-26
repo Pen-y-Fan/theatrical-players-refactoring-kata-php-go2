@@ -22,13 +22,14 @@ class StatementPrinter
     {
         $this->plays = $plays;
         $this->invoice = $invoice;
+        return $this->renderPlainText();
+    }
 
-
-        $result = "Statement for {$invoice->customer}\n";
-
+    private function renderPlainText()
+    {
+        $result = "Statement for {$this->invoice->customer}\n";
         /** @var Performance $performance */
         foreach ($this->invoice->performances as $performance) {
-
             // print line for this order
             $result .= "  {$this->playFor($performance)->name}:";
             $result .= " {$this->usd($this->amountFor($performance))}";

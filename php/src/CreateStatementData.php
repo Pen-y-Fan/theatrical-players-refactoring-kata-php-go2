@@ -14,10 +14,10 @@ class CreateStatementData
         $statementData->customer = $invoice->customer;
         $statementData->performances = array_map(function (Performance $performance) use ($plays) {
             $result = clone $performance;
-            $calculator = new PerformanceCalculator($performance, $this->playFor($result, $plays));
+            $calculator = new PerformanceCalculator($performance, $this->playFor($performance, $plays));
             $result->play = $calculator->play;
             $result->amount = $calculator->amountFor();
-            $result->volumeCredits = $this->volumeCreditsFor($result);
+            $result->volumeCredits = $calculator->volumeCreditsFor();
             return $result;
         }, $invoice->performances);
         $statementData->totalAmount = $this->totalAmount($statementData);

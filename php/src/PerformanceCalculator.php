@@ -55,4 +55,11 @@ class PerformanceCalculator
     {
         return $this->amount();
     }
+
+    public function volumeCreditsFor(): int
+    {
+        return $this->play->type === 'comedy'
+            ? max($this->performance->audience - 30, 0) + (int)floor($this->performance->audience / 5)
+            : max($this->performance->audience - 30, 0);
+    }
 }

@@ -22,20 +22,19 @@ class StatementPrinter
     {
         $this->plays = $plays;
         $this->invoice = $invoice;
-        $totalAmount = 0;
 
 
         $result = "Statement for {$invoice->customer}\n";
 
         /** @var Performance $performance */
         foreach ($this->invoice->performances as $performance) {
+
             // print line for this order
             $result .= "  {$this->playFor($performance)->name}:";
             $result .= " {$this->usd($this->amountFor($performance))}";
             $result .= " ({$performance->audience} seats)\n";
-
-            $totalAmount += $this->amountFor($performance);
         }
+        $totalAmount = $this->totalAmount();
 
         $result .= "Amount owed is {$this->usd($totalAmount)}\n";
         $result .= "You earned {$this->totalVolumeCredits()} credits";
@@ -92,5 +91,14 @@ class StatementPrinter
             $result += $this->volumeCreditsFor($performance);
         }
         return (int)$result;
+    }
+
+    public function totalAmount(): int
+    {
+        $totalAmount = 0;
+        foreach ($this->invoice->performances as $performance) {
+            $totalAmount += $this->amountFor($performance);
+        }
+        return $totalAmount;
     }
 }

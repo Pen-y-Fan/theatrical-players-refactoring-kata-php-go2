@@ -13,18 +13,22 @@ class StatementPrinter
      * @var Play[]
      */
     private $plays;
+    /**
+     * @var Invoice
+     */
+    private $invoice;
 
     public function print(Invoice $invoice, array $plays): string
     {
         $this->plays = $plays;
+        $this->invoice = $invoice;
         $totalAmount = 0;
 
 
         $result = "Statement for {$invoice->customer}\n";
-//        $format = $this->format();
 
         /** @var Performance $performance */
-        foreach ($invoice->performances as $performance) {
+        foreach ($this->invoice->performances as $performance) {
             // print line for this order
             $result .= "  {$this->playFor($performance)->name}:";
             $result .= " {$this->usd($this->amountFor($performance))}";
@@ -33,7 +37,7 @@ class StatementPrinter
             $totalAmount += $this->amountFor($performance);
         }
 
-        $volumeCredits = $this->totalVolumeCredits($invoice);
+        $volumeCredits = $this->totalVolumeCredits();
 
         $result .= "Amount owed is {$this->usd($totalAmount)}\n";
         $result .= "You earned {$volumeCredits} credits";
@@ -82,13 +86,13 @@ class StatementPrinter
             ->formatCurrency($number / 100, 'USD');
     }
 
-    public function totalVolumeCredits(Invoice $invoice)
+    public function totalVolumeCredits(): int
     {
-        $volumeCredits = 0;
-        foreach ($invoice->performances as $performance) {
+        $result = 0;
+        foreach ($this->invoice->performances as $performance) {
             // add volume credits
-            $volumeCredits += $this->volumeCreditsFor($performance);
+            $result += $this->volumeCreditsFor($performance);
         }
-        return $volumeCredits;
+        return (int)$result;
     }
 }

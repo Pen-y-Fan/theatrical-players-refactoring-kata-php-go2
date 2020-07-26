@@ -30,13 +30,13 @@ class StatementPrinter
 
             // print line for this order
             $result .= "  {$this->playFor($performance)->name}:";
-            $result .= " {$this->usd()->formatCurrency($this->amountFor($performance) / 100, 'USD')}";
+            $result .= " {$this->usd($this->amountFor($performance))}";
             $result .= " ({$performance->audience} seats)\n";
 
             $totalAmount += $this->amountFor($performance);
         }
 
-        $result .= "Amount owed is {$this->usd()->formatCurrency($totalAmount / 100, 'USD')}\n";
+        $result .= "Amount owed is {$this->usd($totalAmount)}\n";
         $result .= "You earned {$volumeCredits} credits";
         return $result;
     }
@@ -77,8 +77,9 @@ class StatementPrinter
             : max($performance->audience - 30, 0);
     }
 
-    public function usd(): NumberFormatter
+    public function usd(int $number): string
     {
-        return new NumberFormatter('en_US', NumberFormatter::CURRENCY);
+        return (new NumberFormatter('en_US', NumberFormatter::CURRENCY))
+            ->formatCurrency($number / 100, 'USD');
     }
 }

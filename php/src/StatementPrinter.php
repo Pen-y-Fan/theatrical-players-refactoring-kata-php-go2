@@ -106,6 +106,8 @@ class StatementPrinter
      */
     private function enrichPerformance(Performance $performance): Performance
     {
-        return clone $performance;
+        $result = clone $performance;
+        $result->play = $this->playFor($result);
+        return $result;
     }
 }

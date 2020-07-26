@@ -15,6 +15,10 @@ class Performance
      * @var int
      */
     public $audience;
+    /**
+     * @var Play
+     */
+    public $play;
 
     public function __construct(string $playID, int $audience)
     {

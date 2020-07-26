@@ -37,10 +37,8 @@ class StatementPrinter
             $totalAmount += $this->amountFor($performance);
         }
 
-        $volumeCredits = $this->totalVolumeCredits();
-
         $result .= "Amount owed is {$this->usd($totalAmount)}\n";
-        $result .= "You earned {$volumeCredits} credits";
+        $result .= "You earned {$this->totalVolumeCredits()} credits";
         return $result;
     }
 

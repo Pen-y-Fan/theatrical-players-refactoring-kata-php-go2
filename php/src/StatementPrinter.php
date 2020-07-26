@@ -69,10 +69,10 @@ class StatementPrinter
         return $this->plays[$performance->playID];
     }
 
-    public function volumeCreditsFor(Performance $performance)
+    public function volumeCreditsFor(Performance $performance): int
     {
         return $performance->play->type === 'comedy'
-            ? max($performance->audience - 30, 0) + floor($performance->audience / 5)
+            ? max($performance->audience - 30, 0) + (int)floor($performance->audience / 5)
             : max($performance->audience - 30, 0);
     }
 
@@ -109,6 +109,7 @@ class StatementPrinter
         $result = clone $performance;
         $result->play = $this->playFor($result);
         $result->amount = $this->amountFor($result);
+        $result->volumeCredits = $this->volumeCreditsFor($result);
         return $result;
     }
 }

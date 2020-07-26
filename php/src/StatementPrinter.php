@@ -12,6 +12,11 @@ class StatementPrinter
 {
     public function statement(Invoice $invoice, array $plays): string
     {
+        return $this->renderPlainText($this->createStatementData($invoice, $plays));
+    }
+
+    private function createStatementData($invoice, $plays): stdClass
+    {
         $statementData = new stdClass();
         $statementData->customer = $invoice->customer;
         $statementData->performances = array_map(function (Performance $performance) use ($plays) {
@@ -24,7 +29,7 @@ class StatementPrinter
         $statementData->totalAmount = $this->totalAmount($statementData);
         $statementData->totalVolumeCredits = $this->totalVolumeCredits($statementData);
 
-        return $this->renderPlainText($statementData);
+        return $statementData;
     }
 
     private function renderPlainText(stdClass $data): string

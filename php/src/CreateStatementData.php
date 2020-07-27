@@ -46,7 +46,8 @@ class CreateStatementData extends stdClass
     {
         $this->performances = array_map(function (Performance $performance) use ($plays) {
             $result = clone $performance;
-            $calculator = new PerformanceCalculator($performance, $this->playFor($performance, $plays));
+            $calculator = (new PerformanceCalculatorFactory)
+                            ->create($performance, $this->playFor($performance, $plays));
             $result->play = $calculator->play;
             $result->amount = $calculator->amount();
             $result->volumeCredits = $calculator->volumeCreditsFor();

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Theatrical;
 
-use stdClass;
-
-class CreateStatementData extends stdClass
+class CreateStatementData
 {
     /**
      * @var string
@@ -28,7 +26,7 @@ class CreateStatementData extends stdClass
      */
     public $totalVolumeCredits;
 
-    public function createStatementData(Invoice $invoice, array $plays): stdClass
+    public function createStatementData(Invoice $invoice, array $plays): self
     {
         $this->customer = $invoice->customer;
         $this->enrichPerformance($plays, $invoice);
@@ -61,9 +59,9 @@ class CreateStatementData extends stdClass
     {
         $this->performances = array_map(function (Performance $performance) use ($plays) {
             $result = clone $performance;
+            $result->play = $this->playFor($performance, $plays);
             $calculator = (new PerformanceCalculatorFactory())
-                ->create($performance, $this->playFor($performance, $plays));
-            $result->play = $calculator->play;
+                ->create($performance, $result->play);
             $result->amount = $calculator->amount();
             $result->volumeCredits = $calculator->volumeCredits();
             return $result;

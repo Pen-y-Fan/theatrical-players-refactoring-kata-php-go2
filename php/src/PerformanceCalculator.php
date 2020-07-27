@@ -30,9 +30,8 @@ class PerformanceCalculator
     {
         throw new Error("subclass responsibility");
     }
-
-    public function volumeCreditsFor(): int
+    public function volumeCredits(): int
     {
-        return 0;
+        return max($this->performance->audience - 30, 0);
     }
 }

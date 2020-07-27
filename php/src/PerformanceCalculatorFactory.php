@@ -14,7 +14,7 @@ class PerformanceCalculatorFactory
             case "comedy" :
                 return new ComedyCalculator($performance, $play);
             default:
-                throw new Error(`unknown type: ${$play->type}`);
+                throw new Error("unknown type: {$play->type}");
         }
     }
 }

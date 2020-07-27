@@ -20,9 +20,4 @@ class TragedyCalculator extends PerformanceCalculator
 
         return $result;
     }
-
-    public function volumeCreditsFor(): int
-    {
-        return max($this->performance->audience - 30, 0);
-    }
 }

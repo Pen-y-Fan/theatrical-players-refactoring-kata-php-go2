@@ -50,7 +50,7 @@ class CreateStatementData extends stdClass
                             ->create($performance, $this->playFor($performance, $plays));
             $result->play = $calculator->play;
             $result->amount = $calculator->amount();
-            $result->volumeCredits = $calculator->volumeCreditsFor();
+            $result->volumeCredits = $calculator->volumeCredits();
             return $result;
         }, $invoice->performances);
     }

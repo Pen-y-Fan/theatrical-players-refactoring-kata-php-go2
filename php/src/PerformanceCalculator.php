@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Theatrical;
 
 use Error;
@@ -11,6 +10,7 @@ class PerformanceCalculator
      * @var Performance
      */
     public $performance;
+
     /**
      * @var Play
      */
@@ -18,7 +18,6 @@ class PerformanceCalculator
 
     /**
      * PerformanceCalculator constructor.
-     * @param Performance $performance
      */
     public function __construct(Performance $performance, Play $play)
     {
@@ -28,8 +27,9 @@ class PerformanceCalculator
 
     public function amount(): int
     {
-        throw new Error("subclass responsibility");
+        throw new Error('subclass responsibility');
     }
+
     public function volumeCredits(): int
     {
         return max($this->performance->audience - 30, 0);

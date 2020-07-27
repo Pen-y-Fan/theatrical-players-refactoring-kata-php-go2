@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Theatrical;
-
 
 class TragedyCalculator extends PerformanceCalculator
 {

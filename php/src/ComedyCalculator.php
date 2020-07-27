@@ -1,14 +1,11 @@
 <?php
 
-
 namespace Theatrical;
-
 
 class ComedyCalculator extends PerformanceCalculator
 {
     /**
      * PerformanceCalculator constructor.
-     * @param Performance $performance
      */
     public function __construct(Performance $performance, Play $play)
     {
@@ -23,12 +20,11 @@ class ComedyCalculator extends PerformanceCalculator
         }
         $result += 300 * $this->performance->audience;
 
-
         return $result;
     }
 
     public function volumeCredits(): int
     {
-        return max($this->performance->audience - 30, 0) + (int)floor($this->performance->audience / 5);
+        return max($this->performance->audience - 30, 0) + (int) floor($this->performance->audience / 5);
     }
 }

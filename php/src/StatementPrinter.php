@@ -43,18 +43,18 @@ class StatementPrinter
     private function renderHtml(stdClass $data): string
     {
         $result = "<h1>Statement for {$data->customer}</h1>";
-        $result .= "<table>";
-        $result .= "  <tr><th>play</th><th>seats</th><th>cost</th></tr>";
+        $result .= '<table>';
+        $result .= '  <tr><th>play</th><th>seats</th><th>cost</th></tr>';
         /** @var Performance $performance */
         foreach ($data->performances as $performance) {
             // print line for this order
-            $result .= "  <tr>";
-            $result .="     <td>{$performance->play->name}</td>";
+            $result .= '  <tr>';
+            $result .= "     <td>{$performance->play->name}</td>";
             $result .= "    <td>({$performance->audience} seats)</td>";
             $result .= "    <td>{$this->usd($performance->amount)}</td>";
-            $result .= "  </tr>";
+            $result .= '  </tr>';
         }
-        $result .= "</table>";
+        $result .= '</table>';
         $result .= "<p>Amount owed is {$this->usd($data->totalAmount)}</p>";
         $result .= "<p>You earned {$data->totalVolumeCredits} credits</p>";
         return $result;

@@ -1,1 +1,1 @@
-composer test 
+vendor\bin\phpunit.bat

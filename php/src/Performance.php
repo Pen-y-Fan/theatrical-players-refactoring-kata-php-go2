@@ -15,14 +15,17 @@ class Performance
      * @var int
      */
     public $audience;
+
     /**
      * @var Play
      */
     public $play;
+
     /**
      * @var int
      */
     public $amount;
+
     /**
      * @var int
      */

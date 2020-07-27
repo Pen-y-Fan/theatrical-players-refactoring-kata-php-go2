@@ -9,9 +9,9 @@ class PerformanceCalculatorFactory
     public function create(Performance $performance, Play $play): PerformanceCalculator
     {
         switch ($play->type) {
-            case "tragedy":
+            case 'tragedy':
                 return new TragedyCalculator($performance, $play);
-            case "comedy" :
+            case 'comedy':
                 return new ComedyCalculator($performance, $play);
             default:
                 throw new Error("unknown type: {$play->type}");

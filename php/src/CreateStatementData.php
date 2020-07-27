@@ -6,24 +6,21 @@ namespace Theatrical;
 
 use stdClass;
 
-class CreateStatementData
+class CreateStatementData extends stdClass
 {
+    public $customer;
+    public $performances;
+    public $totalAmount;
+    public $totalVolumeCredits;
+
     public function createStatementData($invoice, $plays): stdClass
     {
-        $statementData = new stdClass();
-        $statementData->customer = $invoice->customer;
-        $statementData->performances = array_map(function (Performance $performance) use ($plays) {
-            $result = clone $performance;
-            $calculator = new PerformanceCalculator($performance, $this->playFor($performance, $plays));
-            $result->play = $calculator->play;
-            $result->amount = $calculator->amountFor();
-            $result->volumeCredits = $calculator->volumeCreditsFor();
-            return $result;
-        }, $invoice->performances);
-        $statementData->totalAmount = $this->totalAmount($statementData);
-        $statementData->totalVolumeCredits = $this->totalVolumeCredits($statementData);
+        $this->customer = $invoice->customer;
+        $this->enrichPerformance($plays, $invoice);
+        $this->totalAmount = $this->totalAmount();
+        $this->totalVolumeCredits = $this->totalVolumeCredits();
 
-        return $statementData;
+        return $this;
     }
 
     protected function playFor(Performance $performance, array $plays): Play
@@ -31,17 +28,29 @@ class CreateStatementData
         return $plays[$performance->playID];
     }
 
-    protected function totalVolumeCredits(stdClass $data): int
+    protected function totalVolumeCredits(): int
     {
-        return (int)array_reduce($data->performances, function ($total, $performance) {
+        return (int)array_reduce($this->performances, function ($total, $performance) {
             return $total + $performance->volumeCredits;
         }, 0);
     }
 
-    public function totalAmount(stdClass $data): int
+    public function totalAmount(): int
     {
-        return array_reduce($data->performances, function ($total, $performance) {
+        return array_reduce($this->performances, function ($total, $performance) {
             return $total + $performance->amount;
         }, 0);
+    }
+
+    private function enrichPerformance($plays, $invoice): void
+    {
+        $this->performances = array_map(function (Performance $performance) use ($plays) {
+            $result = clone $performance;
+            $calculator = new PerformanceCalculator($performance, $this->playFor($performance, $plays));
+            $result->play = $calculator->play;
+            $result->amount = $calculator->amountFor();
+            $result->volumeCredits = $calculator->volumeCreditsFor();
+            return $result;
+        }, $invoice->performances);
     }
 }

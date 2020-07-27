@@ -8,12 +8,24 @@ use stdClass;
 
 class CreateStatementData extends stdClass
 {
+    /**
+     * @var string
+     */
     public $customer;
 
+    /**
+     * @var Performance[]
+     */
     public $performances;
 
+    /**
+     * @var int
+     */
     public $totalAmount;
 
+    /**
+     * @var int
+     */
     public $totalVolumeCredits;
 
     public function createStatementData(Invoice $invoice, array $plays): stdClass
@@ -45,7 +57,7 @@ class CreateStatementData extends stdClass
         }, 0);
     }
 
-    private function enrichPerformance($plays, $invoice): void
+    private function enrichPerformance(array $plays, Invoice $invoice): void
     {
         $this->performances = array_map(function (Performance $performance) use ($plays) {
             $result = clone $performance;

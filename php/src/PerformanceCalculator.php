@@ -3,7 +3,6 @@
 
 namespace Theatrical;
 
-
 use Error;
 
 class PerformanceCalculator
@@ -49,11 +48,6 @@ class PerformanceCalculator
                 throw new Error("Unknown type: {$this->play->type}");
         }
         return $result;
-    }
-
-    public function amountFor(): int
-    {
-        return $this->amount();
     }
 
     public function volumeCreditsFor(): int

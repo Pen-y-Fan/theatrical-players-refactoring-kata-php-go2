@@ -13,7 +13,7 @@ class CreateStatementData extends stdClass
     public $totalAmount;
     public $totalVolumeCredits;
 
-    public function createStatementData($invoice, $plays): stdClass
+    public function createStatementData(Invoice $invoice, array $plays): stdClass
     {
         $this->customer = $invoice->customer;
         $this->enrichPerformance($plays, $invoice);
@@ -48,7 +48,7 @@ class CreateStatementData extends stdClass
             $result = clone $performance;
             $calculator = new PerformanceCalculator($performance, $this->playFor($performance, $plays));
             $result->play = $calculator->play;
-            $result->amount = $calculator->amountFor();
+            $result->amount = $calculator->amount();
             $result->volumeCredits = $calculator->volumeCreditsFor();
             return $result;
         }, $invoice->performances);

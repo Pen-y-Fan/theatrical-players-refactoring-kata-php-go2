@@ -2,9 +2,12 @@ parameters:
     sets:
         - 'psr12'
         - 'php71'
+        - 'php70'
         - 'symplify'
         - 'common'
         - 'clean-code'
+        - 'strict'
+        - 'phpunit'
 
     line_ending: "\n"
 
